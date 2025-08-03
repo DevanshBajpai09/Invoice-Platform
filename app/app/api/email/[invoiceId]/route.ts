@@ -1,47 +1,42 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import prisma from "@/app/utils/db";
 import { requireUser } from "@/app/utils/hooks";
 import { emailClient } from "@/app/utils/mailtrap";
 import { NextResponse } from "next/server";
 
-export async function POST(request:Request,{
-    params,
-  }: {
-    params: Promise<{ invoiceId: string }>;
-  }
-){
-   try{
-    const session = await requireUser()
-    const {invoiceId} = await params;
+export async function POST(
+  request: Request,
+  { params }: { params: { invoiceId: string } }
+) {
+  try {
+    const session = await requireUser();
+    const { invoiceId } = params;
 
     const invoiceData = await prisma.invoice.findUnique({
-        where:{
-            id:invoiceId,
-            userId:session.user?.id
-        }
-    })
+      where: {
+        id: invoiceId,
+        userId: session.user?.id,
+      },
+    });
 
-    if(!invoiceData){
-        return NextResponse.json({error:'invoice not found'},{status:404})
-
+    if (!invoiceData) {
+      return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
     }
+
     const sender = {
-        email: "hello@demomailtrap.com",
-        name: "Devansh Bajpai",
-      };
-      emailClient.send({
-        from: sender,
-        to:  [{email:'devanshbajpai07@gmail.com'}],
-       
-        subject:'Reminder Invoice Payment',
-        text:'Hey you forgot to pay'
-        
-      })
+      email: "hello@demomailtrap.com",
+      name: "Devansh Bajpai",
+    };
 
-      return NextResponse.json({success:true})
+    await emailClient.send({
+      from: sender,
+      to: [{ email: "devanshbajpai07@gmail.com" }],
+      subject: "Reminder Invoice Payment",
+      text: "Hey you forgot to pay",
+    });
 
-   }catch(error){
-    return NextResponse.json({error:'failed to send email'},{status:500})
-   }
-
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Email error:", error);
+    return NextResponse.json({ error: "Failed to send email" }, { status: 500 });
+  }
 }
