@@ -53,6 +53,7 @@ const RecentInvoices = async() => {
               +
               {formateCurrency({
                 amount: item.total,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 currency: item.currency as any,
               })}
             </div>

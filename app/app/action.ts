@@ -8,7 +8,7 @@ import prisma from "./utils/db";
 import { emailClient } from "./utils/mailtrap";
 import { formateCurrency } from "./utils/formateCurrency";
 
-
+ // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function onBoredUser(prevState: any, formData: FormData) {
   const session = await requireUser();
 
@@ -20,7 +20,7 @@ export async function onBoredUser(prevState: any, formData: FormData) {
     return submission.reply();
   }
 
-  const data = await prisma.user.update({
+  await prisma.user.update({
     where: {
       id: session.user?.id,
     },
@@ -34,7 +34,7 @@ export async function onBoredUser(prevState: any, formData: FormData) {
   return redirect("/dashbored");
 }
 
-export async function createInvoice(prevState: any,formData: FormData) {
+export async function createInvoice(prevState: unknown,formData: FormData) {
   const session = await requireUser();
 
   const submission = parseWithZod(formData, {
@@ -84,6 +84,7 @@ export async function createInvoice(prevState: any,formData: FormData) {
       "dueDate": new Intl.DateTimeFormat("en-US", {
         dateStyle: "long",
       }).format(new Date(submission.value.date)),
+       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       "totalAmount": formateCurrency({amount:submission.value.total,currency:submission.value.currency as any}),
       "invoiceLink": `http://localhost:3000/api/invoices/${data.id}`
     }
@@ -91,7 +92,7 @@ export async function createInvoice(prevState: any,formData: FormData) {
   return redirect('/dashbored/invoice')
 }
 
-export async function editinvoice(prevState:any , formData:FormData){
+export async function editinvoice(prevState: unknown, formData: FormData){
   const session = await requireUser()
   const submission = parseWithZod(formData,{
     schema:invoiceSchema
@@ -147,6 +148,7 @@ export async function editinvoice(prevState:any , formData:FormData){
       "dueDate": new Intl.DateTimeFormat("en-US", {
         dateStyle: "long",
       }).format(new Date(submission.value.date)),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       "totalAmount": formateCurrency({amount:submission.value.total,currency:submission.value.currency as any}),
       "invoiceLink": `http://localhost:3000/api/invoices/${data.id}`
     }
@@ -156,21 +158,21 @@ export async function editinvoice(prevState:any , formData:FormData){
 
 export async function deleteInvoice(invoiceId:string){
   const session = await requireUser()
-  const data = await prisma.invoice.delete({
+  await prisma.invoice.delete({
     where:{
       userId:session.user?.id,
       id:invoiceId
 
     }
   })
-
+  
   return redirect('/dashbored/invoice')
 }
 
 
 export async function paidInvoice(invoiceId:string){
   const session = await requireUser()
-  const data = await prisma.invoice.update({
+  await prisma.invoice.update({
     where:{
       userId:session.user?.id,
       id:invoiceId

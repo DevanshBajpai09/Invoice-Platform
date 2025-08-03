@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Badge } from "@/components/ui/badge";
@@ -15,19 +16,23 @@ import { useActionState, useState } from "react";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 
-import { Prisma } from "@prisma/client";
+import { Invoice } from "@prisma/client";
 import React from "react";
 import { invoiceSchema } from "../utils/zodSchema";
 import { editinvoice } from "../action";
 import { formateCurrency } from "../utils/formateCurrency";
 
+type Currency = "USD" | "EUR";
+
+
 // Correct interface definition
 interface iAppProps {
-  data: Prisma.InvoiceGetPayload<{ include: { items: true } }>;
+  data: Invoice;
 }
 
 const EditInvoice = ({ data }: iAppProps) => {
-  const [lastResult, action] = useActionState(editinvoice, undefined);
+  const [actionState, action] = useActionState(editinvoice, undefined);
+  const lastResult = typeof actionState === "function" ? actionState() : actionState;
   const [form, fields] = useForm({
     lastResult,
 
@@ -44,7 +49,7 @@ const EditInvoice = ({ data }: iAppProps) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date(data.date));
   const [rate, setRate] = useState<string>(data.invoiceItemRate.toString());
   const [quantity, setQuantity] = useState<string>(data.invoiceItemQuantity.toString());
-  const [currency, setCurrency] = useState<string>(data.currency);
+  const [currency, setCurrency] = useState<Currency>(data.currency as Currency);
 
   // Fixed spelling mistake in variable name
   const calculateTotal = (Number(quantity) || 0) * (Number(rate) || 0);
@@ -92,7 +97,7 @@ const EditInvoice = ({ data }: iAppProps) => {
                 defaultValue={currency}
                 name={fields.currency.name}
                 key={fields.currency.key}
-                onValueChange={(value) => setCurrency(value)}
+                onValueChange={(value) => setCurrency(value as Currency)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Currency" />
@@ -121,7 +126,7 @@ const EditInvoice = ({ data }: iAppProps) => {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent>
-                  <Calendar selected={selectedDate} onSelect={(date) => setSelectedDate(date || new Date())} />
+                  <Calendar selected={selectedDate} onSelect={(date:any) => setSelectedDate(date || new Date())} />
                 </PopoverContent>
               </Popover>
               <p className="text-red-500 text-sm">{fields.date.errors}</p>

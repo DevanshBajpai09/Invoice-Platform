@@ -70,6 +70,7 @@ const InvoiceList = async() => {
                 <TableCell>
                   {formateCurrency({
                     amount: invoice.total,
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     currency: invoice.currency as any,
                   })}
                 </TableCell>

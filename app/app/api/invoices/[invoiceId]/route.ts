@@ -101,12 +101,15 @@ export async function GET(
   pdf.text(
     formateCurrency({
       amount: data.invoiceItemRate,
+      
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       currency: data.currency as any,
     }),
     130,
     110
   );
   pdf.text(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     formateCurrency({ amount: data.total, currency: data.currency as any }),
     160,
     110
@@ -118,6 +121,7 @@ export async function GET(
   pdf.setFont("helvetica", "bold");
   pdf.text(`Total (${data.currency})`, 130, 130);
   pdf.text(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     formateCurrency({ amount: data.total, currency: data.currency as any }),
     160,
     130
@@ -132,9 +136,10 @@ export async function GET(
     pdf.text(data.note, 20, 155);
   }
 
-  // genrate pdf a buffer
-  const pdfBuffer = Buffer.from(pdf.output("arraybuffer"));
-  return new NextResponse(pdfBuffer, {
+  // generate pdf as Uint8Array
+  const pdfArrayBuffer = pdf.output("arraybuffer");
+  const pdfUint8Array = new Uint8Array(pdfArrayBuffer as ArrayBuffer);
+  return new NextResponse(pdfUint8Array, {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": "inline",

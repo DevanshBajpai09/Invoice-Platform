@@ -311,6 +311,7 @@ const CreateInvoice = ({
                 <Input
                   value={formateCurrency({
                     amount: calcualteTotal,
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     currency: currency as any,
                   })}
                   disabled
@@ -326,6 +327,7 @@ const CreateInvoice = ({
                 <span>
                   {formateCurrency({
                     amount: calcualteTotal,
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     currency: currency as any,
                   })}
                 </span>
@@ -335,6 +337,7 @@ const CreateInvoice = ({
                 <span className="font-medium underline underline-offset-2">
                   {formateCurrency({
                     amount: calcualteTotal,
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     currency: currency as any,
                   })}
                 </span>

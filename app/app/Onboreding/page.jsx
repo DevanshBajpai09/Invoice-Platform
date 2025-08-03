@@ -3,7 +3,7 @@ import React, { useActionState } from 'react'
 import {Card,CardContent,CardDescription,CardHeader,CardTitle} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import SubmitButton from '../Components/SubmitButton'
+import SubmitButton from '../Components/SubmitButtons'
 import {onBoredUser} from '../action.ts'
 import { useForm } from '@conform-to/react'
 import { parseWithZod } from '@conform-to/zod';
@@ -37,7 +37,7 @@ const Onboreding = () => {
                 </CardDescription>
             </CardHeader>
             <CardContent>
-              <form action="" className='grid gap-4' action={action} id={form.id} onSubmit={form.onSubmit} noValidate>
+              <form className='grid gap-4' action={action} id={form.id} onSubmit={form.onSubmit} noValidate>
                 <div className='grid grid-cols-2 gap-4'>
                 <div className='flex flex-col gap-2'>
                   <Label>First Name</Label>
